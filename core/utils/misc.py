@@ -25,5 +25,5 @@ def process_cfg(cfg):
     cfg.log_dir = log_dir
     os.makedirs(log_dir)
 
-    shutil.copytree('configs', f'{log_dir}/configs')
-    shutil.copytree('core/FlowFormer', f'{log_dir}/FlowFormer')
+    #shutil.copytree('configs', f'{log_dir}/configs')
+    #shutil.copytree('core/FlowFormer', f'{log_dir}/FlowFormer')

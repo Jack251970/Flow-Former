@@ -7,7 +7,7 @@ from torch import einsum
 from einops.layers.torch import Rearrange
 from einops import rearrange
 
-from utils.utils import coords_grid, bilinear_sampler, upflow8
+from core.utils.utils import coords_grid, bilinear_sampler, upflow8
 from ..common import FeedForward, pyramid_retrieve_tokens, sampler, sampler_gaussian_fix, retrieve_tokens, MultiHeadAttention, MLP
 from ..encoders import twins_svt_large_context, twins_svt_large
 from ...position_encoding import PositionEncodingSine, LinearPositionEncoding

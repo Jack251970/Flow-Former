@@ -38,20 +38,26 @@ except:
     class GradScaler:
         def __init__(self):
             pass
+
         def scale(self, loss):
             return loss
+
         def unscale_(self, optimizer):
             pass
+
         def step(self, optimizer):
             optimizer.step()
+
         def update(self):
             pass
+
 
 #torch.autograd.set_detect_anomaly(True)
 
 
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
 
 def train(cfg):
     model = nn.DataParallel(build_flowformer(cfg))
@@ -91,7 +97,7 @@ def train(cfg):
             scaler.scale(loss).backward()
             scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.trainer.clip)
-            
+
             scaler.step(optimizer)
             scheduler.step()
             scaler.update()
@@ -102,7 +108,7 @@ def train(cfg):
             ### change evaluate to functions
 
             if total_steps % cfg.val_freq == cfg.val_freq - 1:
-                PATH = '%s/%d_%s.pth' % (cfg.log_dir, total_steps+1, cfg.name)
+                PATH = '%s/%d_%s.pth' % (cfg.log_dir, total_steps + 1, cfg.name)
                 # torch.save(model.state_dict(), PATH)
 
                 results = {}
@@ -115,9 +121,9 @@ def train(cfg):
                         results.update(evaluate.validate_kitti(model.module))
 
                 logger.write_dict(results)
-                
+
                 model.train()
-            
+
             total_steps += 1
 
             if total_steps > cfg.trainer.num_steps:
@@ -133,10 +139,11 @@ def train(cfg):
 
     return PATH
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--name', default='flowformer', help="name your experiment")
-    parser.add_argument('--stage', help="determines which dataset to use for training") 
+    parser.add_argument('--stage', help="determines which dataset to use for training")
     parser.add_argument('--validation', type=str, nargs='+')
 
     parser.add_argument('--mixed_precision', action='store_true', help='use mixed precision')

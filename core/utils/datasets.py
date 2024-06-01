@@ -102,7 +102,7 @@ class FlowDataset(data.Dataset):
         return len(self.image_list)
 
 class MpiSintel_submission(FlowDataset):
-    def __init__(self, aug_params=None, split='test', root='datasets/Sintel', dstype='clean'):
+    def __init__(self, aug_params=None, split='test', root='data/Sintel', dstype='clean'):
         super(MpiSintel_submission, self).__init__(aug_params)
         flow_root = osp.join(root, split, 'flow')
         image_root = osp.join(root, split, dstype)
@@ -120,7 +120,7 @@ class MpiSintel_submission(FlowDataset):
                 self.flow_list += sorted(glob(osp.join(flow_root, scene, '*.flo')))
 
 class MpiSintel(FlowDataset):
-    def __init__(self, aug_params=None, split='training', root='datasets/Sintel', dstype='clean'):
+    def __init__(self, aug_params=None, split='training', root='data/Sintel', dstype='clean'):
         super(MpiSintel, self).__init__(aug_params)
 
         root = 's3://'
@@ -161,7 +161,7 @@ class MpiSintel(FlowDataset):
 
 
 class FlyingChairs(FlowDataset):
-    def __init__(self, aug_params=None, split='train', root='datasets/FlyingChairs_release/data'):
+    def __init__(self, aug_params=None, split='train', root='data/FlyingChairs_release/data'):
         super(FlyingChairs, self).__init__(aug_params)
 
         root = 's3://'
@@ -186,7 +186,7 @@ class FlyingChairs(FlowDataset):
 
 
 class FlyingThings3D(FlowDataset):
-    def __init__(self, aug_params=None, root='datasets/FlyingThings3D', dstype='frames_cleanpass'):
+    def __init__(self, aug_params=None, root='data/FlyingThings3D', dstype='frames_cleanpass'):
         super(FlyingThings3D, self).__init__(aug_params)
 
         root = 's3://'
@@ -223,7 +223,7 @@ class FlyingThings3D(FlowDataset):
       
 
 class KITTI(FlowDataset):
-    def __init__(self, aug_params=None, split='training', root='datasets/KITTI'):
+    def __init__(self, aug_params=None, split='training', root='data/KITTI'):
         super(KITTI, self).__init__(aug_params, sparse=True)
         if split == 'testing':
             self.is_test = True
@@ -261,7 +261,7 @@ class KITTI(FlowDataset):
         #     self.flow_list = sorted(glob(osp.join(root, 'flow_occ/*_10.png')))
 
 class AutoFlow(data.Dataset):
-    def __init__(self, num_steps, crop_size, log_dir, root='datasets/'):
+    def __init__(self, num_steps, crop_size, log_dir, root='data/'):
         super(AutoFlow, self).__init__()
 
         root = 's3://'
@@ -390,7 +390,7 @@ class AutoFlow(data.Dataset):
 
 
 class HD1K(FlowDataset):
-    def __init__(self, aug_params=None, root='datasets/HD1k'):
+    def __init__(self, aug_params=None, root='data/HD1k'):
         super(HD1K, self).__init__(aug_params, sparse=True)
 
         root = 's3://'
