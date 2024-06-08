@@ -3,7 +3,7 @@ import math
 
 from tqdm import tqdm
 
-from core.utils.flow_image import warp_image_with_flow
+from core.utils.metrics import warp_image_with_flow, Interpolation_error, angular_error
 
 # from attr import validate
 sys.path.append('core')
@@ -359,21 +359,17 @@ def validate_tub(model, sigma=0.05):
             epe_list.append(epe.view(-1).numpy())
 
             # AE
-            dot_product = torch.sum(flow_pre * flow_gt, dim=0) + 1
-            norm_pred = torch.norm(flow_pre, dim=0) + 1
-            norm_gt = torch.norm(flow_gt, dim=0) + 1
-            cos_angle = dot_product / (norm_pred * norm_gt)
-            ae = torch.acos(cos_angle.clamp(-1, 1))
-            ae_list.append(ae.view(-1).numpy())
+            flow_pre_np = flow_pre.permute(1, 2, 0).numpy()
+            flow_gt_np = flow_gt.permute(1, 2, 0).numpy()
+            ae_np = angular_error(flow_pre_np, flow_gt_np, np.ones_like(flow_gt_np[:, :, 0]))
+            ae_list.append(ae_np)
 
             # IE
-            image1_cuda = image1[0]
-            image2_cuda = image2[0]
-            flow_pre_cuda = flow_pre.unsqueeze(0).cuda()
-            warped_image2 = warp_image_with_flow(image2_cuda.unsqueeze(0), flow_pre_cuda)
-            ie = torch.abs(image1_cuda - warped_image2[0]).mean().cpu()
-            ie_numpy = ie.view(-1).numpy()
-            ie_list.append(ie_numpy)
+            image1_np = image1[0].permute(1, 2, 0).cpu().numpy()
+            image2_np = image2[0].permute(1, 2, 0).cpu().numpy()
+            warped_image1_np = warp_image_with_flow(image1_np, flow_pre_np)
+            ie_np = Interpolation_error(warped_image1_np, image2_np)
+            ie_list.append(ie_np)
 
         epe_all = np.concatenate(epe_list)
         epe = np.mean(epe_all)
