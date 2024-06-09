@@ -99,17 +99,10 @@ class FlowDataset(data.Dataset):
 
 
 class TubCrowdFlow(FlowDataset):
-    def __init__(self, aug_params=None, split='training', root='data/TUBCrowdFlow', dstype='IM01', dataset=None):
+    def __init__(self, aug_params=None, root='data/TUBCrowdFlow', dstype='IM01', dstypes=None):
         super(TubCrowdFlow, self).__init__(aug_params)
 
-        if dataset == 'all':
-            dstypes = ['IM01', 'IM01_hDyn', 'IM02', 'IM02_hDyn', 'IM03', 'IM03_hDyn', 'IM04', 'IM04_hDyn', 'IM05',
-                       'IM05_hDyn']
-        elif dataset == 'hDyn':
-            dstypes = ['IM01_hDyn', 'IM02_hDyn', 'IM03_hDyn', 'IM04_hDyn', 'IM05_hDyn']
-        elif dataset == 'fix':
-            dstypes = ['IM01', 'IM02', 'IM03', 'IM04', 'IM05']
-        else:
+        if dstypes is None:
             assert dstype in ['IM01', 'IM01_hDyn', 'IM02', 'IM02_hDyn', 'IM03', 'IM03_hDyn', 'IM04', 'IM04_hDyn', 'IM05',
                               'IM05_hDyn']
             dstypes = [dstype]
@@ -253,13 +246,16 @@ def fetch_dataloader(args, TRAIN_DS='C+T+K+S+H', tub_dstype='IM01'):
         elif TRAIN_DS == 'C+T+K/S':
             train_dataset = 100 * sintel_clean + 100 * sintel_final + things
 
+        else:
+            raise ValueError('Training set not recognized: ' + TRAIN_DS)
+
     elif args.stage == 'kitti':
         aug_params = {'crop_size': args.image_size, 'min_scale': -0.2, 'max_scale': 0.4, 'do_flip': False}
         train_dataset = KITTI(aug_params, split='training')
 
     elif args.stage == 'tub':
         aug_params = {'crop_size': args.image_size, 'min_scale': -0.2, 'max_scale': 0.6, 'do_flip': True}
-        train_dataset = TubCrowdFlow(aug_params, split='training', dataset='IM01')
+        train_dataset = TubCrowdFlow(aug_params, dstypes=['IM01', 'IM02', 'IM03', 'IM04'])
 
     else:
         raise ValueError('Training set not recognized: ' + args.stage)

@@ -315,16 +315,11 @@ def validate_sintel(model, sigma=0.05):
 
 
 @torch.no_grad()
-def validate_tub(model, sigma=0.05, dataset='all'):
+def validate_tub(model, sigma=0.05, dstypes=None):
     """ Perform validation using the TUBCrowdFlow dataset """
-    if dataset == 'all':
-        dstypes = ['IM01', 'IM01_hDyn', 'IM02', 'IM02_hDyn', 'IM03', 'IM03_hDyn', 'IM04', 'IM04_hDyn', 'IM05', 'IM05_hDyn']
-    elif dataset == 'hDyn':
-        dstypes = ['IM01_hDyn', 'IM02_hDyn', 'IM03_hDyn', 'IM04_hDyn', 'IM05_hDyn']
-    elif dataset == 'fix':
-        dstypes = ['IM01', 'IM02', 'IM03', 'IM04', 'IM05']
-    else:
-        dstypes = [dataset]
+    if dstypes is None:
+        dstypes = ['IM01', 'IM01_hDyn', 'IM02', 'IM02_hDyn', 'IM03', 'IM03_hDyn', 'IM04', 'IM04_hDyn', 'IM05',
+                   'IM05_hDyn']
 
     IMAGE_SIZE = [720, 1280]
 

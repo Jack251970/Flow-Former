@@ -123,7 +123,7 @@ def train(cfg):
                     elif val_dataset == 'kitti':
                         results.update(evaluate.validate_kitti(model.module))
                     elif val_dataset == 'tub':
-                        results.update(evaluate.validate_tub(model.module, dataset='IM02'))
+                        results.update(evaluate.validate_tub(model.module, dstypes=['IM05']))
 
                 logger.write_dict(results)
 
