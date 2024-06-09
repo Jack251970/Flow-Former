@@ -20,7 +20,6 @@ from tqdm import tqdm
 
 from core import optimizer
 import evaluate_FlowFormer as evaluate
-import evaluate_FlowFormer_tile as evaluate_tile
 import core.datasets as datasets
 from core.loss import sequence_loss
 from core.optimizer import fetch_optimizer
@@ -124,7 +123,7 @@ def train(cfg):
                     elif val_dataset == 'kitti':
                         results.update(evaluate.validate_kitti(model.module))
                     elif val_dataset == 'tub':
-                        results.update(evaluate_tile.validate_tub(model.module, dataset='hDyn'))
+                        results.update(evaluate.validate_tub(model.module, dataset='IM02'))
 
                 logger.write_dict(results)
 

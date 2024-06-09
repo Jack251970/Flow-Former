@@ -259,7 +259,7 @@ def fetch_dataloader(args, TRAIN_DS='C+T+K+S+H', tub_dstype='IM01'):
 
     elif args.stage == 'tub':
         aug_params = {'crop_size': args.image_size, 'min_scale': -0.2, 'max_scale': 0.6, 'do_flip': True}
-        train_dataset = TubCrowdFlow(aug_params, split='training', dataset='fix')
+        train_dataset = TubCrowdFlow(aug_params, split='training', dataset='IM01')
 
     else:
         raise ValueError('Training set not recognized: ' + args.stage)

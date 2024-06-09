@@ -86,12 +86,20 @@ def validate_sintel(model):
 
 
 @torch.no_grad()
-def validate_tub(model):
+def validate_tub(model, dataset='all'):
     """ Perform validation using the TUBCrowdFlow dataset """
+    if dataset == 'all':
+        dstypes = ['IM01', 'IM01_hDyn', 'IM02', 'IM02_hDyn', 'IM03', 'IM03_hDyn', 'IM04', 'IM04_hDyn', 'IM05', 'IM05_hDyn']
+    elif dataset == 'hDyn':
+        dstypes = ['IM01_hDyn', 'IM02_hDyn', 'IM03_hDyn', 'IM04_hDyn', 'IM05_hDyn']
+    elif dataset == 'fix':
+        dstypes = ['IM01', 'IM02', 'IM03', 'IM04', 'IM05']
+    else:
+        dstypes = [dataset]
+
     model.eval()
     results = {}
-    for dstype in ['IM01', 'IM01_hDyn', 'IM02', 'IM02_hDyn', 'IM03', 'IM03_hDyn', 'IM04', 'IM04_hDyn', 'IM05',
-                   'IM05_hDyn']:
+    for dstype in dstypes:
         val_dataset = datasets.TubCrowdFlow(dstype=dstype)
 
         epe_list = []
