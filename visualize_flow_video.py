@@ -24,7 +24,7 @@ def visualize_flow_video(data_dir, image_folder, out_dir):
     height, width, layers = frame.shape
     print(f"height: {height}, width: {width}, layers: {layers}")
 
-    if ori_height != height or ori_width != width or len(ori_images) != (len(images) + 1):
+    if ori_height != height or ori_width != width or len(ori_images) != len(images):
         # output flow video
         video_file = os.path.join(out_dir, 'output.mp4')
         frame_rate = 15.0
@@ -41,7 +41,7 @@ def visualize_flow_video(data_dir, image_folder, out_dir):
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         video = cv2.VideoWriter(video_file, fourcc, frame_rate, (2 * width, height))
         for index in range(len(images)):
-            ori_image_path = os.path.join(data_dir, ori_images[index+1])
+            ori_image_path = os.path.join(data_dir, ori_images[index])
             ori_frame = cv2.imread(ori_image_path)
             image_path = os.path.join(image_folder, images[index])
             frame = cv2.imread(image_path)
@@ -54,7 +54,7 @@ def visualize_flow_video(data_dir, image_folder, out_dir):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--sintel_dir', default='./data/TUBCrowdFlow/images/IM01')
+    parser.add_argument('--sintel_dir', default='./data/TUBCrowdFlow/gt_flow/IM01')
     parser.add_argument('--viz_root_dir', default='./outputs/sintel/data/TUBCrowdFlow/images/IM01')
     parser.add_argument('--out_dir', default='./outputs/sintel/data/TUBCrowdFlow/images/IM01/Video')
 
