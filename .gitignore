@@ -413,3 +413,6 @@ checkpoints/
 
 # Logs
 logs/
+
+# Outputs
+outputs/
