@@ -13,6 +13,7 @@ _CN.add_noise = True
 _CN.critical_params = []
 
 _CN.transformer = 'latentcostformer'
+_CN.model = 'checkpoints/sintel.pth'
 _CN.restore_ckpt = 'checkpoints/things.pth'
 
 # latentcostformer

@@ -11,7 +11,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
-from configs.submission import get_cfg
+from configs import submission, sintel, tub
 from core.utils.misc import process_cfg
 from core import datasets
 from core.utils import flow_viz
@@ -145,9 +145,9 @@ def prepare_image(root_dir, viz_root_dir, fn1, fn2, keep_size):
     return image1, image2, viz_fn
 
 
-def build_model():
-    print(f"building  model...")
-    cfg = get_cfg()
+def build_model(argscfg, cfg):
+    print(f"building {argscfg} model...")
+
     model = torch.nn.DataParallel(build_flowformer(cfg))
     model.load_state_dict(torch.load(cfg.model))
 
@@ -195,12 +195,13 @@ def generate_pairs(dirname, start_idx, end_idx):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--eval_type', default='sintel')
+    parser.add_argument('--cfg', default='submission')
     parser.add_argument('--root_dir', default='.')
     parser.add_argument('--sintel_dir', default='data/Sintel/test/clean')
     parser.add_argument('--seq_dir', default='demo_data/mihoyo')
     parser.add_argument('--start_idx', type=int, default=1)  # starting index of the image sequence
     parser.add_argument('--end_idx', type=int, default=1200)  # ending index of the image sequence
-    parser.add_argument('--viz_root_dir', default='viz_results')
+    parser.add_argument('--viz_root_dir', default='./outputs/sintel')
     parser.add_argument('--keep_size',
                         action='store_true')  # keep the image size, or the image will be adaptively resized.
 
@@ -209,11 +210,21 @@ if __name__ == '__main__':
     root_dir = args.root_dir
     viz_root_dir = args.viz_root_dir
 
-    model = build_model()
+    if args.cfg == 'submission':
+        cfg = submission.get_cfg()
+    elif args.cfg == 'sintel':
+        cfg = sintel.get_cfg()
+    elif args.cfg == 'tub':
+        cfg = tub.get_cfg()
+    else:
+        raise ValueError(f"Unknown config: {args.cfg}")
+    model = build_model(args.cfg, cfg)
 
-    if args.eval_type == 'sintel':
+    if args.eval_type == 'sintel' or 'tub':
         img_pairs = process_sintel(args.sintel_dir)
     elif args.eval_type == 'seq':
         img_pairs = generate_pairs(args.seq_dir, args.start_idx, args.end_idx)
+    else:
+        raise ValueError(f"Unknown evaluation type: {args.eval_type}")
     with torch.no_grad():
         visualize_flow(root_dir, viz_root_dir, model, img_pairs, args.keep_size)
