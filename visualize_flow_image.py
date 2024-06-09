@@ -157,7 +157,9 @@ def build_model(argscfg, cfg):
     return model
 
 
-def visualize_flow(root_dir, viz_root_dir, model, img_pairs, keep_size):
+def visualize_flow_image(root_dir, viz_root_dir, model, img_pairs, keep_size):
+    print(f"visualizing flow image...")
+    print(f"root dir = {root_dir}, viz root dir = {viz_root_dir}, keep size = {keep_size}, keep size = {keep_size}")
     weights = None
     for img_pair in img_pairs:
         fn1, fn2 = img_pair
@@ -199,11 +201,11 @@ if __name__ == '__main__':
     parser.add_argument('--root_dir', default='.')
     parser.add_argument('--sintel_dir', default='data/Sintel/test/clean')
     parser.add_argument('--seq_dir', default='demo_data/mihoyo')
-    parser.add_argument('--start_idx', type=int, default=1)  # starting index of the image sequence
-    parser.add_argument('--end_idx', type=int, default=1200)  # ending index of the image sequence
+    parser.add_argument('--start_idx', type=int, default=1, help='starting index of the image sequence')
+    parser.add_argument('--end_idx', type=int, default=1200, help='ending index of the image sequence')
     parser.add_argument('--viz_root_dir', default='./outputs/sintel')
-    parser.add_argument('--keep_size',
-                        action='store_true')  # keep the image size, or the image will be adaptively resized.
+    parser.add_argument('--keep_size', default=True, action='store_true',
+                        help='keep the image size, or the image will be adaptively resized')
 
     args = parser.parse_args()
 
@@ -227,4 +229,4 @@ if __name__ == '__main__':
     else:
         raise ValueError(f"Unknown evaluation type: {args.eval_type}")
     with torch.no_grad():
-        visualize_flow(root_dir, viz_root_dir, model, img_pairs, args.keep_size)
+        visualize_flow_image(root_dir, viz_root_dir, model, img_pairs, args.keep_size)
