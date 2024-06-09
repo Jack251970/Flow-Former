@@ -99,20 +99,33 @@ class FlowDataset(data.Dataset):
 
 
 class TubCrowdFlow(FlowDataset):
-    def __init__(self, aug_params=None, split='training', root='data/TUBCrowdFlow', dstype='IM01'):
+    def __init__(self, aug_params=None, split='training', root='data/TUBCrowdFlow', dstype='IM01', dataset=None):
         super(TubCrowdFlow, self).__init__(aug_params)
 
-        assert dstype in ['IM01', 'IM01_hDyn', 'IM02', 'IM02_hDyn', 'IM03', 'IM03_hDyn', 'IM04', 'IM04_hDyn', 'IM05',
-                          'IM05_hDyn']
+        if dataset == 'all':
+            dstypes = ['IM01', 'IM01_hDyn', 'IM02', 'IM02_hDyn', 'IM03', 'IM03_hDyn', 'IM04', 'IM04_hDyn', 'IM05',
+                       'IM05_hDyn']
+        elif dataset == 'hDyn':
+            dstypes = ['IM01_hDyn', 'IM02_hDyn', 'IM03_hDyn', 'IM04_hDyn', 'IM05_hDyn']
+        elif dataset == 'fix':
+            dstypes = ['IM01', 'IM02', 'IM03', 'IM04', 'IM05']
+        else:
+            assert dstype in ['IM01', 'IM01_hDyn', 'IM02', 'IM02_hDyn', 'IM03', 'IM03_hDyn', 'IM04', 'IM04_hDyn', 'IM05',
+                              'IM05_hDyn']
+            dstypes = [dstype]
 
-        flow_root = osp.join(root, 'gt_flow', dstype)
-        image_root = osp.join(root, 'images', dstype)
+        flow_root = osp.join(root, 'gt_flow')
+        image_root = osp.join(root, 'images')
 
-        image_list = sorted(glob(osp.join(image_root, '*.png')))
-        for i in range(len(image_list) - 1):
-            self.image_list += [[image_list[i], image_list[i + 1]]]
+        for scene in os.listdir(image_root):
+            if scene not in dstypes:
+                continue
+            image_list = sorted(glob(osp.join(image_root, scene, '*.png')))
+            for i in range(len(image_list) - 1):
+                self.image_list += [[image_list[i], image_list[i + 1]]]
+                self.extra_info += [(scene, i)]  # scene and frame_id
 
-        self.flow_list += sorted(glob(osp.join(flow_root, '*.flo')))
+            self.flow_list += sorted(glob(osp.join(flow_root, scene, '*.flo')))
 
 
 class MpiSintel(FlowDataset):
@@ -246,7 +259,7 @@ def fetch_dataloader(args, TRAIN_DS='C+T+K+S+H', tub_dstype='IM01'):
 
     elif args.stage == 'tub':
         aug_params = {'crop_size': args.image_size, 'min_scale': -0.2, 'max_scale': 0.6, 'do_flip': True}
-        train_dataset = TubCrowdFlow(aug_params, split='training', dstype=tub_dstype)
+        train_dataset = TubCrowdFlow(aug_params, split='training', dataset='fix')
 
     else:
         raise ValueError('Training set not recognized: ' + args.stage)

@@ -16,6 +16,8 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 from torch.utils.data import DataLoader
+from tqdm import tqdm
+
 from core import optimizer
 import evaluate_FlowFormer as evaluate
 import evaluate_FlowFormer_tile as evaluate_tile
@@ -79,10 +81,12 @@ def train(cfg):
 
     add_noise = False
 
+    i = 0
+
     should_keep_training = True
     while should_keep_training:
 
-        for i_batch, data_blob in enumerate(train_loader):
+        for i_batch, data_blob in tqdm(enumerate(train_loader), desc=f'{i}'):
             optimizer.zero_grad()
             image1, image2, flow, valid = [x.cuda() for x in data_blob]
 
@@ -120,7 +124,7 @@ def train(cfg):
                     elif val_dataset == 'kitti':
                         results.update(evaluate.validate_kitti(model.module))
                     elif val_dataset == 'tub':
-                        results.update(evaluate_tile.validate_tub(model.module, dataset='IM02'))
+                        results.update(evaluate_tile.validate_tub(model.module, dataset='hDyn'))
 
                 logger.write_dict(results)
 
@@ -131,6 +135,8 @@ def train(cfg):
             if total_steps > cfg.trainer.num_steps:
                 should_keep_training = False
                 break
+
+        i = i + 1
 
     logger.close()
     # PATH = cfg.log_dir + '/final'
@@ -145,8 +151,8 @@ def train(cfg):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--name', default='flowformer', help="name your experiment")
-    parser.add_argument('--stage', help="determines which dataset to use for training")
-    parser.add_argument('--validation', type=str, nargs='+')
+    parser.add_argument('--stage', type=str, default='tub', help="determines which dataset to use for training")
+    parser.add_argument('--validation', type=str, default='tub', nargs='+')
 
     parser.add_argument('--mixed_precision', action='store_true', help='use mixed precision')
 
