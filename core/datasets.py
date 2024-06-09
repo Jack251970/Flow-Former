@@ -213,7 +213,7 @@ class HD1K(FlowDataset):
             seq_ix += 1
 
 
-def fetch_dataloader(args, TRAIN_DS='C+T+K+S+H'):
+def fetch_dataloader(args, TRAIN_DS='C+T+K+S+H', tub_dstype='IM01'):
     """ Create the data loader for the corresponding trainign set """
 
     if args.stage == 'chairs':
@@ -243,6 +243,13 @@ def fetch_dataloader(args, TRAIN_DS='C+T+K+S+H'):
     elif args.stage == 'kitti':
         aug_params = {'crop_size': args.image_size, 'min_scale': -0.2, 'max_scale': 0.4, 'do_flip': False}
         train_dataset = KITTI(aug_params, split='training')
+
+    elif args.stage == 'tub':
+        aug_params = {'crop_size': args.image_size, 'min_scale': -0.2, 'max_scale': 0.6, 'do_flip': True}
+        train_dataset = TubCrowdFlow(aug_params, split='training', dstype=tub_dstype)
+
+    else:
+        raise ValueError('Training set not recognized: ' + args.stage)
 
     train_loader = data.DataLoader(train_dataset, batch_size=args.batch_size,
                                    pin_memory=False, shuffle=True, num_workers=12, drop_last=True)
