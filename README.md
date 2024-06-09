@@ -115,11 +115,11 @@ python evaluate_FlowFormer_tile.py --eval kitti_submission
 ```
 Visualizing the sintel dataset:
 ```Shell
-python visualize_flow.py --eval_type sintel --keep_size
+python visualize_flow_image.py --eval_type sintel --keep_size
 ```
 Visualizing an image sequence extracted from a video:
 ```Shell
-python visualize_flow.py --eval_type seq
+python visualize_flow_image.py --eval_type seq
 ```
 The default image sequence format is:
 ```Shell
@@ -133,7 +133,6 @@ The default image sequence format is:
             .
         ├── 001000.png
 ```
-
 
 ## Results
 The validation results with tile of FlowFormer on the TubCrowdFlow dataset are shown below. 
