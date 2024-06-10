@@ -14,6 +14,7 @@ _CN.critical_params = []
 
 _CN.transformer = 'latentcostformer'
 
+_CN.model = 'checkpoints/sintel-tub2.pth'
 _CN.restore_ckpt = 'checkpoints/sintel.pth'
 
 # latentcostformer

@@ -171,9 +171,11 @@ def visualize_flow_image(root_dir, viz_root_dir, model, img_pairs, keep_size):
         cv2.imwrite(viz_fn, flow_img[:, :, [2, 1, 0]])
 
 
-def process_sintel(sintel_dir):
+def process_sintel(sintel_dir, scenes=None):
     img_pairs = []
     for scene in os.listdir(sintel_dir):
+        if scenes is not None and scene not in scenes:
+            continue
         dirname = osp.join(sintel_dir, scene)
         image_list = sorted(glob(osp.join(dirname, '*.png')))
         for i in range(len(image_list) - 1):
@@ -223,7 +225,7 @@ if __name__ == '__main__':
     model = build_model(args.cfg, cfg)
 
     if args.eval_type == 'sintel' or 'tub':
-        img_pairs = process_sintel(args.sintel_dir)
+        img_pairs = process_sintel(args.sintel_dir, scenes=['IM01'])
     elif args.eval_type == 'seq':
         img_pairs = generate_pairs(args.seq_dir, args.start_idx, args.end_idx)
     else:
