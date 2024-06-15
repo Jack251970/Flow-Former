@@ -171,13 +171,18 @@ def visualize_flow_image(root_dir, viz_root_dir, model, img_pairs, keep_size):
         cv2.imwrite(viz_fn, flow_img[:, :, [2, 1, 0]])
 
 
-def process_scenes(data_dir, scenes=None, suffix='*.png'):
+def process_scenes(data_dir, scenes=None):
     img_pairs = []
+    suffix_regexes = ['*.jpg', '*.png', '*.jpeg']
     for scene in os.listdir(data_dir):
         if scenes is not None and scene not in scenes:
             continue
         dirname = osp.join(data_dir, scene)
-        image_list = sorted(glob(osp.join(dirname, suffix)))
+        image_list = None
+        for suffix in suffix_regexes:
+            image_list = sorted(glob(osp.join(dirname, suffix)))
+            if len(image_list) > 0:
+                break
         for i in range(len(image_list) - 1):
             img_pairs.append((image_list[i], image_list[i + 1]))
 
@@ -229,7 +234,7 @@ if __name__ == '__main__':
     elif args.eval_type == 'tub':
         img_pairs = process_scenes(args.data_dir, scenes=['IM01'])
     elif args.eval_type == 'wuhan':
-        img_pairs = process_scenes(args.data_dir, suffix='*.jpg')
+        img_pairs = process_scenes(args.data_dir)
     elif args.eval_type == 'seq':
         img_pairs = generate_pairs(args.seq_dir, args.start_idx, args.end_idx)
     else:
