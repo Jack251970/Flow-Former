@@ -4,21 +4,26 @@ import os
 import cv2
 
 
-def visualize_flow_video(data_dir, flow_folder, out_dir):
+def visualize_flow_video(data_dir, flow_folder):
     """
     Visualize flow video from the given data directory and image folder.
     The images in the data directory will be put on the left side of the video.
     Args:
         data_dir: data directory
         flow_folder: flow image folder
-        out_dir: output directory
     """
     # create output directory
+    out_dir = os.path.join(flow_dir, 'video')
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
     # read ori image
-    ori_images = [img for img in os.listdir(data_dir) if img.endswith(".png")]
+    suffixs = ['.jpg', '.png', '.jpeg']
+    ori_images = None
+    for suffix in suffixs:
+        ori_images = [img for img in os.listdir(data_dir) if img.endswith(suffix)]
+        if len(ori_images) > 0:
+            break
     ori_images.sort()
     first_ori_image_path = os.path.join(data_dir, ori_images[0])
     ori_frame = cv2.imread(first_ori_image_path)
@@ -89,12 +94,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', default='./data/TUBCrowdFlow/gt_flow/IM01')
     parser.add_argument('--flow_dir', default='./outputs/sintel/data/TUBCrowdFlow/images/IM01')
-    parser.add_argument('--out_dir', default='./outputs/sintel/data/TUBCrowdFlow/images/IM01/Video')
 
     args = parser.parse_args()
 
     data_dir = args.data_dir
     flow_dir = args.flow_dir
-    out_dir = args.out_dir
 
-    visualize_flow_video(data_dir, flow_dir, out_dir)
+    visualize_flow_video(data_dir, flow_dir)

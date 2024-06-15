@@ -171,13 +171,13 @@ def visualize_flow_image(root_dir, viz_root_dir, model, img_pairs, keep_size):
         cv2.imwrite(viz_fn, flow_img[:, :, [2, 1, 0]])
 
 
-def process_sintel(sintel_dir, scenes=None):
+def process_scenes(data_dir, scenes=None, suffix='*.png'):
     img_pairs = []
-    for scene in os.listdir(sintel_dir):
+    for scene in os.listdir(data_dir):
         if scenes is not None and scene not in scenes:
             continue
-        dirname = osp.join(sintel_dir, scene)
-        image_list = sorted(glob(osp.join(dirname, '*.png')))
+        dirname = osp.join(data_dir, scene)
+        image_list = sorted(glob(osp.join(dirname, suffix)))
         for i in range(len(image_list) - 1):
             img_pairs.append((image_list[i], image_list[i + 1]))
 
@@ -201,7 +201,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval_type', default='sintel')
     parser.add_argument('--cfg', default='submission')
     parser.add_argument('--root_dir', default='.')
-    parser.add_argument('--sintel_dir', default='data/Sintel/test/clean')
+    parser.add_argument('--data_dir', default='data/Sintel/test/clean')
     parser.add_argument('--seq_dir', default='demo_data/mihoyo')
     parser.add_argument('--start_idx', type=int, default=1, help='starting index of the image sequence')
     parser.add_argument('--end_idx', type=int, default=1200, help='ending index of the image sequence')
@@ -224,8 +224,12 @@ if __name__ == '__main__':
         raise ValueError(f"Unknown config: {args.cfg}")
     model = build_model(args.cfg, cfg)
 
-    if args.eval_type == 'sintel' or 'tub':
-        img_pairs = process_sintel(args.sintel_dir, scenes=['IM01'])
+    if args.eval_type == 'sintel':
+        img_pairs = process_scenes(args.data_dir)
+    elif args.eval_type == 'tub':
+        img_pairs = process_scenes(args.data_dir, scenes=['IM01'])
+    elif args.eval_type == 'wuhan':
+        img_pairs = process_scenes(args.data_dir, suffix='*.jpg')
     elif args.eval_type == 'seq':
         img_pairs = generate_pairs(args.seq_dir, args.start_idx, args.end_idx)
     else:
