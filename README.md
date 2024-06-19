@@ -166,6 +166,12 @@ After finetuning on the TubCrowdFlow dataset, the results are shown below.
 | IM05      | 0.367640 | 0.142700 | 67.033006 |
 | IM05_hDyn | 2.023295 | 0.501428 | 80.836906 |
 
+## Model Complexity
+
+| Model      | Params(M) | MACs(G) |
+|------------|-----------|---------|
+| sintel.pth | 1.057T    | 16.081M |
+
 ## License
 FlowFormer is released under the Apache License
 
