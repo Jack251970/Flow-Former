@@ -234,7 +234,7 @@ if __name__ == '__main__':
     elif args.eval_type == 'tub':
         img_pairs = process_scenes(args.data_dir, scenes=['IM01'])
     elif args.eval_type == 'wuhan':
-        img_pairs = process_scenes(args.data_dir)
+        img_pairs = process_scenes(args.data_dir, scenes=['transfer1-1-20231231170000-20231231203000-100992192'])
     elif args.eval_type == 'seq':
         img_pairs = generate_pairs(args.seq_dir, args.start_idx, args.end_idx)
     else:
