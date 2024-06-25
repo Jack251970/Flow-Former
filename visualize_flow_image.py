@@ -213,6 +213,7 @@ if __name__ == '__main__':
     parser.add_argument('--viz_root_dir', default='./outputs/sintel')
     parser.add_argument('--keep_size', default=True, action='store_true',
                         help='keep the image size, or the image will be adaptively resized')
+    parser.add_argument('--scenes', nargs='+', help='list of scenes to process')
 
     args = parser.parse_args()
 
@@ -232,9 +233,9 @@ if __name__ == '__main__':
     if args.eval_type == 'sintel':
         img_pairs = process_scenes(args.data_dir)
     elif args.eval_type == 'tub':
-        img_pairs = process_scenes(args.data_dir, scenes=['IM01'])
+        img_pairs = process_scenes(args.data_dir, args.scenes)
     elif args.eval_type == 'wuhan':
-        img_pairs = process_scenes(args.data_dir, scenes=['transfer1-1-20231231170000-20231231203000-100992192'])
+        img_pairs = process_scenes(args.data_dir, args.scenes)
     elif args.eval_type == 'seq':
         img_pairs = generate_pairs(args.seq_dir, args.start_idx, args.end_idx)
     else:
