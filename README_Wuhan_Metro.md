@@ -78,5 +78,5 @@ The models under flowformer-small is a small version of our flowformer. things_k
 ## Test
 Test the model on the Wuhan_Metro dataset. The corresponding config file is `configs/sintel.py`.
 ```Shell
-python visualize_flow_image.py --eval_type wuhan --cfg sintel --data_dir data/Wuhan_Metro/
+python visualize_flow_image.py --eval_type wuhan --cfg sintel --data_dir data/Wuhan_Metro/ --scenes transfer1-1-20231231170000-20231231203000-100992192 江汉路-D口地面扶梯-2-20231231170000-20231231203000-30896731
 ```
