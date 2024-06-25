@@ -167,8 +167,12 @@ def visualize_flow_image(root_dir, viz_root_dir, model, img_pairs, keep_size):
 
         image1, image2, viz_fn = prepare_image(root_dir, viz_root_dir, fn1, fn2, keep_size)
         flow = compute_flow(model, image1, image2, weights)
+        # save to .png
         flow_img = flow_viz.flow_to_image(flow)
         cv2.imwrite(viz_fn, flow_img[:, :, [2, 1, 0]])
+        # save to .flo
+        flo_filename = viz_fn.replace('.png', '.flo')
+        frame_utils.writeFlow(flo_filename, flow)
 
 
 def process_scenes(data_dir, scenes=None):
